@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         val ageRow = findViewById<View>(R.id.ageRow)
+        val ageInput = ageRow.findViewById<EditText>(R.id.valueInput)
         val ageLabel = ageRow.findViewById<TextView>(R.id.label)
         val ageunit = ageRow.findViewById<TextView>(R.id.unit)
         ageLabel.text = "Age"
@@ -41,46 +42,48 @@ class MainActivity : AppCompatActivity() {
 
         val resultText = findViewById<TextView>(R.id.bmiResultText)
         val calculateBtn = findViewById<Button>(R.id.calculateBtn)
-        calculateBtn.setOnClickListener{
-            println("Weight text: ${weightInput.text}")
-            println("Height text: ${heightInput.text}")
+        var isCalculated = false
 
-            val weightStr = weightInput.text.toString()
-            val heightStr = heightInput.text.toString()
-            if (weightStr.isNotEmpty() && heightStr.isNotEmpty()){
-                var weight = weightStr.toDouble()
-                var height = heightStr.toDouble()
-                height /=100
+        calculateBtn.setOnClickListener {
+            if (!isCalculated) {
+                val weightStr = weightInput.text.toString()
+                val heightStr = heightInput.text.toString()
 
-                val bmi = weight / (height * height)
+                if (weightStr.isNotEmpty() && heightStr.isNotEmpty()) {
+                    val weight = weightStr.toDouble()
+                    var height = heightStr.toDouble() / 100
 
-                val bmiFormatted = String.format("%.2f", bmi)
-                val bmiCategory = when {
-                    bmi < 18.5 -> "Underweight"
-                    bmi < 25 -> "Normal"
-                    bmi < 30 -> "Overweight"
-                    else -> "Obese"
+                    val bmi = weight / (height * height)
+                    val bmiFormatted = String.format("%.2f", bmi)
+                    val bmiCategory = when {
+                        bmi < 18.5 -> "Underweight"
+                        bmi < 25 -> "Normal"
+                        bmi < 30 -> "Overweight"
+                        else -> "Obese"
+                    }
+
+                    val fullText = "BMI : $bmiFormatted ($bmiCategory)"
+                    val spannable = SpannableString(fullText)
+                    spannable.setSpan(
+                        RelativeSizeSpan(0.75f),
+                        fullText.indexOf("("),
+                        fullText.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    resultText.text = spannable
+
+                    calculateBtn.text = "Reset"
+                    isCalculated = true
+                } else {
+                    resultText.text = "Please enter valid weight & height"
                 }
-
-                val fullText = "BMI : $bmiFormatted ($bmiCategory)"
-                val spannable = SpannableString(fullText)
-
-                val startIndex = fullText.indexOf("(")
-                val endIndex = fullText.length
-
-                spannable.setSpan(
-                    RelativeSizeSpan(0.75f),
-                    startIndex,
-                    endIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                resultText.text = spannable
-                println("BMI text: ${bmiFormatted}")
-
-            }
-            else {
-                resultText.text = "Please enter valid weight & height"
+            } else {
+                ageInput.text.clear()
+                weightInput.text.clear()
+                heightInput.text.clear()
+                resultText.text = "BMI : 0"
+                calculateBtn.text = "Calculate"
+                isCalculated = false
             }
         }
 
