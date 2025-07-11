@@ -7,7 +7,10 @@ A simple and user-friendly BMI Calculator built with Kotlin for Android. The app
 ## 📱 Preview
 
 
-https://github.com/user-attachments/assets/779b112d-73ac-4d0a-9c0d-287f54a0c7b5
+
+https://github.com/user-attachments/assets/9209ab57-b55b-42b6-9f63-896a1a00b23d
+
+
 
 
 
